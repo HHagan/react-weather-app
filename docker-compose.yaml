@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  react-portfolio-website: 
+    image: react-weather-app
+    build: .
+    container_name: react-weather-app
+    ports: 
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src:/app/src
