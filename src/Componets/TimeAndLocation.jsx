@@ -1,14 +1,18 @@
+// TimeAndLocation.jsx
 import React from 'react';
 
-function TimeAndLocation({location_data}) {
-  console.log(location_data)
-  
-  // Convert the epoch time to a Date object
-  const date = new Date(location_data.days[0].datetimeEpoch * 1000);
-
-  // Get the day of the week, day, month, and year
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-  const formattedDate = date.toLocaleDateString(undefined, options);
+function TimeAndLocation({ location_data }) {
+  const { days } = location_data;
+  const { datetimeEpoch, address } = days[0];
+  const date = new Date(datetimeEpoch * 1000);
+  const formattedDate = date.toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <div>
@@ -19,7 +23,7 @@ function TimeAndLocation({location_data}) {
       </div>
 
       <div className='flex items-center justify-center my-3'>
-        <p className='text-white text-3xl font-medium'>{location_data.address}</p>
+        <p className='text-white text-3xl font-medium'>{address}</p>
       </div>
     </div>
   );

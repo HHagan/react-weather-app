@@ -4,19 +4,16 @@ import { CiLocationOn } from 'react-icons/ci';
 import { WiFahrenheit, WiCelsius } from 'react-icons/wi';
 import { getWeatherData } from '../services/weatherService';
 
-function Inputs() {
+function Inputs({ temperatureUnit, onTemperatureUnitChange }) {
   const [searchInput, setSearchInput] = useState('');
-  const [temperatureUnit, setTemperatureUnit] = useState('metric'); // Default to Celsius
 
   const getCurrentLocationWeather = async () => {
     try {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
-          //const weatherData = await getWeatherData(`${latitude},${longitude}`, temperatureUnit);
-          //console.log('Current location weather data:', weatherData);
-          console.log('current location weather thingy is disabled man')
-          // Handle the weather data as needed, e.g., update state in App.js
+
+          console.log('current location weather thingy is disabled man');
         });
       } else {
         alert('Geolocation is not supported by this browser.');
@@ -27,18 +24,16 @@ function Inputs() {
   };
 
   const handleSearch = async () => {
-    // Implement the logic to search for the provided city using the searchInput
     try {
       const weatherData = await getWeatherData(searchInput, temperatureUnit);
       console.log('Search result weather data:', weatherData);
-      // Handle the weather data as needed, e.g., update state in App.js
     } catch (error) {
       console.error('Error fetching weather data for the search input:', error);
     }
   };
 
   const handleUnitToggle = (unit) => {
-    setTemperatureUnit(unit);
+    onTemperatureUnitChange(unit);
   };
 
   const handleKeyPress = (event) => {
