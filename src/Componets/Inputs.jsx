@@ -4,7 +4,7 @@ import { CiLocationOn } from 'react-icons/ci';
 import { WiFahrenheit, WiCelsius } from 'react-icons/wi';
 import { getWeatherData } from '../services/weatherService';
 
-function Inputs({ temperatureUnit, onTemperatureUnitChange }) {
+function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
   const [searchInput, setSearchInput] = useState('');
 
   const getCurrentLocationWeather = async () => {
@@ -33,7 +33,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange }) {
   };
 
   const handleUnitToggle = (unit) => {
-    onTemperatureUnitChange(unit);
+    onTemperatureUnitChange(unit, contrastColor); // Pass contrastColor to the onTemperatureUnitChange function
   };
 
   const handleKeyPress = (event) => {
@@ -71,6 +71,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange }) {
           name="metric"
           className={`text-xl text-white font-light ${temperatureUnit === 'metric' ? 'text-blue-500' : ''}`}
           onClick={() => handleUnitToggle('metric')}
+          style={{ color: contrastColor }} // Set font color here
         >
           <WiCelsius size={30} />
         </button>
@@ -79,6 +80,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange }) {
           name="imperial"
           className={`text-xl text-white font-light ${temperatureUnit === 'imperial' ? 'text-blue-500' : ''}`}
           onClick={() => handleUnitToggle('imperial')}
+          style={{ color: contrastColor }} // Set font color here
         >
           <WiFahrenheit size={30} />
         </button>
@@ -88,4 +90,5 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange }) {
 }
 
 export default Inputs;
+
 

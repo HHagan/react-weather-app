@@ -1,12 +1,12 @@
 // App.js
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import TopButtons from './Componets/TopButtons';
 import Inputs from './Componets/Inputs';
 import TimeAndLocation from './Componets/TimeAndLocation';
 import TempAndDets from './Componets/TempAndDets';
 import Forecast from './Componets/Forecast';
-import axios from 'axios';
+import { getWeatherData } from './services/weatherService';
+
 
 const getBackgroundColor = (temperature) => {
   if (temperature <= 0) {
@@ -31,64 +31,72 @@ function getContrastColor(hexColor) {
 function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState(null);
-  const [temperatureUnit, setTemperatureUnit] = useState('metric'); // Default to Celsius
+  const [temperatureUnit, setTemperatureUnit] = useState('metric');
+  const [contrastColor, setContrastColor] = useState(null);
+  const [include] = useState(['hours', 'days', 'alerts', 'current', 'events']);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          'https://7c4aeacf-8e77-44c7-9942-9cd6dcb4e231.mock.pstmn.io/helloName'
-        );
-        console.log('API Response:', response.data);
-        setWeatherData(response.data);
+        setIsLoading(true);
+        const response = await getWeatherData('Tulsa, OK', temperatureUnit, include);
+        setWeatherData(response);
       } catch (error) {
-        console.error('Error fetching weather data:', error);
         setError(`Error fetching weather data: ${error.message}`);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [temperatureUnit]);
+
+  useEffect(() => {
+    if (weatherData) {
+      const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
+      const newContrastColor = getContrastColor(backgroundColor);
+      setContrastColor(newContrastColor);
+    }
+  }, [weatherData]);
 
   if (error) {
-    return <p>{error}</p>;
+    return <p>Error: {error}</p>;
   }
 
-  if (!weatherData) {
-    console.log('weatherData', weatherData);
+  if (isLoading || !weatherData || !contrastColor) {
     return <p>Loading...</p>;
-  } else {
-    console.log(weatherData.locations[0].days[0]);
   }
 
   const handleTemperatureUnitChange = (unit) => {
     setTemperatureUnit(unit);
   };
 
-  const backgroundColor = getBackgroundColor(weatherData.locations[0].days[0].temp);
-  const contrastColor = getContrastColor(backgroundColor);
+  const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
 
   return (
     <div className='mx-auto max-w-screen-md mt-4 py-5 px-32 h-fit shadow-xl shadow-gray-400' style={{ backgroundColor: backgroundColor }}>
       <TopButtons backgroundColor={backgroundColor} contrastColor={contrastColor} />
-      <Inputs temperatureUnit={temperatureUnit} onTemperatureUnitChange={handleTemperatureUnitChange} />
+
+      <Inputs temperatureUnit={temperatureUnit} onTemperatureUnitChange={handleTemperatureUnitChange} contrastColor={contrastColor} />
 
       <>
-        
-        <TimeAndLocation location_data={weatherData.locations[0]} backgroundColor={backgroundColor} />
-        
-        <TempAndDets days_data={weatherData.locations[0].days[0]} temperatureUnit={temperatureUnit} contrastColor={contrastColor} />
+        <TimeAndLocation location_data={weatherData} backgroundColor={backgroundColor} />
+
+        <TempAndDets days_data={weatherData.days[0]} temperatureUnit={temperatureUnit} contrastColor={contrastColor} />
+
         <Forecast
           title='Hourly Forecast'
-          data={weatherData.locations[0].days[0].hours}
+          data={weatherData.days[0].hours}
           isHourly={true}
           temperatureUnit={temperatureUnit}
           backgroundColor={backgroundColor}
           contrastColor={contrastColor}
         />
+
         <Forecast
           title='Daily Forecast'
-          data={weatherData.locations[0].days.slice(1, 6)}
+          data={weatherData.days.slice(1, 6)}
           isHourly={false}
           temperatureUnit={temperatureUnit}
           backgroundColor={backgroundColor}
@@ -100,6 +108,9 @@ function App() {
 }
 
 export default App;
+
+
+
 
 
 
