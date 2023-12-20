@@ -14,11 +14,11 @@ function TempAndDets({ days_data, temperatureUnit }) {
     <div style={{ backgroundColor: backgroundColor, color: contrastColor }}>
        <div className='flex flex-row items-center justify-between text-black py-3'>
         <img src={`${process.env.PUBLIC_URL}/imgs/1st Set - Color/${days_data.icon}.svg`} alt="" className='w-20' />
-        <p className='text-4xl font-bold' style={{ color: contrastColor }}>{convertTemperature(days_data.temp)}°</p>
+        <p className='text-4xl font-bold' style={{ color: contrastColor }}>{convertTemperature(days_data.temp, temperatureUnit)}°</p>
         <div className='flex flex-col space-y-2'>
           <div className='flex font-light text-sm items-center justify-center'>
             <WiThermometer size={24} className='mr-2' />
-            <span>Feels like: <span className='font-medium ml-1'>{convertTemperature(days_data.feelslike)}°</span></span>
+            <span>Feels like: <span className='font-medium ml-1'>{convertTemperature(days_data.feelslike, temperatureUnit)}°</span></span>
           </div>
           <div className='flex font-light text-sm items-center justify-center'>
             <WiHumidity size={24} className='mr-2' />

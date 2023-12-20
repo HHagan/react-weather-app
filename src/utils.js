@@ -9,6 +9,7 @@ export function getContrastColor(backgroundColor) {
   }
 
   export function convertTemperature(temp, temperatureUnit) {
+    console.log(`temp: ${temp}, temperatureUnit: ${temperatureUnit}, Converted Temp: ${temperatureUnit === 'metric' ? Math.round(temp) : Math.round((temp * 9) / 5 + 32)} `)
     return temperatureUnit === 'metric' ? Math.round(temp) : Math.round((temp * 9) / 5 + 32);
   }
   

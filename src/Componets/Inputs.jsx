@@ -32,8 +32,9 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
     }
   };
 
-  const handleUnitToggle = (unit) => {
-    onTemperatureUnitChange(unit, contrastColor); // Pass contrastColor to the onTemperatureUnitChange function
+  const handleTemperatureToggle = (newUnit) => {
+    console.log('Temperature unit changed to:', newUnit);
+    onTemperatureUnitChange(newUnit);
   };
 
   const handleKeyPress = (event) => {
@@ -70,7 +71,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
         <button
           name="metric"
           className={`text-xl text-white font-light ${temperatureUnit === 'metric' ? 'text-blue-500' : ''}`}
-          onClick={() => handleUnitToggle('metric')}
+          onClick={() => handleTemperatureToggle('metric')}
           style={{ color: contrastColor }} // Set font color here
         >
           <WiCelsius size={30} />
@@ -79,7 +80,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
         <button
           name="imperial"
           className={`text-xl text-white font-light ${temperatureUnit === 'imperial' ? 'text-blue-500' : ''}`}
-          onClick={() => handleUnitToggle('imperial')}
+          onClick={() => handleTemperatureToggle('imperial')}
           style={{ color: contrastColor }} // Set font color here
         >
           <WiFahrenheit size={30} />
@@ -90,5 +91,3 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
 }
 
 export default Inputs;
-
-

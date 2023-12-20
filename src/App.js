@@ -58,7 +58,7 @@ function App() {
       const newContrastColor = getContrastColor(backgroundColor);
       setContrastColor(newContrastColor);
     }
-  }, [weatherData]);
+  }, [weatherData, contrastColor]);
 
   if (error) {
     return <p>Error: {error}</p>;
@@ -68,9 +68,15 @@ function App() {
     return <p>Loading...</p>;
   }
 
-  const handleTemperatureUnitChange = (unit) => {
-    setTemperatureUnit(unit);
-  };
+  // const handleTemperatureUnitChange = (unit) => {
+  //   setTemperatureUnit(unit);
+  // }
+      const handleTemperatureUnitChange = (unit) => {
+        console.log(`handleTemperatureUnitChange: ${unit}`)
+        setTemperatureUnit(unit);
+      };
+   
+  
 
   const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
 
