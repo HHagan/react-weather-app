@@ -1,4 +1,4 @@
-// Desc: Utility functions
+// Note: Color utility functions
 export function getContrastColor(backgroundColor) {
     // Convert the background color to a number
     const bg = parseInt(backgroundColor.replace('#', ''), 16);
@@ -8,22 +8,7 @@ export function getContrastColor(backgroundColor) {
   
     return contrast;
   }
-
-  export function convertTemperature(temp, temperatureUnit) {
-    console.log(`temp: ${temp}, temperatureUnit: ${temperatureUnit}, Converted Temp: ${temperatureUnit === 'metric' ? Math.round(temp) : Math.round((temp * 9) / 5 + 32)} `)
-    return temperatureUnit === 'metric' ? Math.round(temp) : Math.round((temp * 9) / 5 + 32);
-  }
   
-  export function formatHour(hour) {
-    // Convert hour to 12-hour format
-    return hour >= 12 ? (hour === 12 ? 12 : hour - 12) + ' PM' : (hour === 0 ? 12 : hour) + ' AM';
-  }
-  
-  export function getAdjustedDateTime(datetimeEpoch, timezoneOffset) {
-    const forecastDateTime = new Date(datetimeEpoch * 1000);
-    return new Date(forecastDateTime.getTime() + (timezoneOffset * 60 * 1000));
-  }
-
   export function getBackgroundColor(temperature) {
     if (temperature <= 0) {
       return '#b3e0ff'; // Cold color - Light blue

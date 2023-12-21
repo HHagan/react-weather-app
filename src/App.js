@@ -6,27 +6,7 @@ import TimeAndLocation from './Componets/TimeAndLocation';
 import TempAndDets from './Componets/TempAndDets';
 import Forecast from './Componets/Forecast';
 import { getWeatherData } from './services/weatherService';
-
-
-const getBackgroundColor = (temperature) => {
-  if (temperature <= 0) {
-    return '#b3e0ff'; // Cold color - Light blue
-  } else if (temperature > 0 && temperature <= 20) {
-    return '#add8e6'; // Cool color - Light steel blue
-  } else if (temperature > 20 && temperature <= 30) {
-    return '#ffe4b5'; // Subdued warm color - Moccasin
-  } else {
-    return '#ffccbc'; // Hot color - Apricot
-  }
-};
-
-function getContrastColor(hexColor) {
-  const r = parseInt(hexColor.slice(1, 3), 16);
-  const g = parseInt(hexColor.slice(3, 5), 16);
-  const b = parseInt(hexColor.slice(5, 7), 16);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? '#000000' : '#ffffff';
-}
+import { getContrastColor, getBackgroundColor } from './utils/colorUtils';
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
@@ -36,6 +16,10 @@ function App() {
   const [include] = useState(['hours', 'days', 'alerts', 'current', 'events']);
   const [isLoading, setIsLoading] = useState(true);
 
+  const handleTemperatureUnitChange = (unit) => {
+    setTemperatureUnit(unit);
+  };
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,28 +40,25 @@ function App() {
     if (weatherData) {
       const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
       const newContrastColor = getContrastColor(backgroundColor);
-      setContrastColor(newContrastColor);
+      setContrastColor((prevContrastColor) => {
+        // Use a callback to access the latest state
+        if (newContrastColor !== prevContrastColor) {
+          return newContrastColor;
+        }
+        return prevContrastColor;
+      });
     }
-  }, [weatherData, contrastColor]);
+  }, [weatherData]);
 
   if (error) {
     return <p>Error: {error}</p>;
   }
 
-  if (isLoading || !weatherData || !contrastColor) {
+  if (isLoading || !weatherData || !contrastColor ) {
     return <p>Loading...</p>;
   }
 
-  // const handleTemperatureUnitChange = (unit) => {
-  //   setTemperatureUnit(unit);
-  // }
-      const handleTemperatureUnitChange = (unit) => {
-        console.log(`handleTemperatureUnitChange: ${unit}`)
-        setTemperatureUnit(unit);
-      };
    
-  
-
   const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
 
   return (

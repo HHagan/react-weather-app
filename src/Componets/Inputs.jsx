@@ -7,14 +7,14 @@ import { getWeatherData } from '../services/weatherService';
 function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
   const [searchInput, setSearchInput] = useState('');
 
+  const handleGeolocation = async ({ coords: { latitude, longitude } }) => {
+    console.log('current location weather thingy is disabled man');
+  };
+
   const getCurrentLocationWeather = async () => {
     try {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const { latitude, longitude } = position.coords;
-
-          console.log('current location weather thingy is disabled man');
-        });
+        navigator.geolocation.getCurrentPosition(handleGeolocation);
       } else {
         alert('Geolocation is not supported by this browser.');
       }

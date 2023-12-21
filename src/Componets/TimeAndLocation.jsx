@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getContrastColor} from '../utils';
+import { getContrastColor } from '../utils';
 
 // DateDisplay function for displaying the date
 function DateDisplay({ timezone, backgroundColor }) {
@@ -29,17 +29,13 @@ function DateDisplay({ timezone, backgroundColor }) {
 
   return (
     <div className='flex items-center justify-center my-6'>
-      <div className='flex flex-col items-center justify-center'>
-        <p className='text-1xl font-light' style={{ color: contrastColor }}>{formattedDate}</p>
-      </div>
+      <p className='text-1xl font-light' style={{ color: contrastColor }}>{formattedDate}</p>
     </div>
   );
 }
 
 // TimeAndLocation function
-function TimeAndLocation({ location_data, backgroundColor }) {
-  const { datetimeEpoch, address, timezone } = location_data;
-
+function TimeAndLocation({ location_data: { address, timezone }, backgroundColor }) {
   return (
     <div className='flex flex-col items-center justify-center'>
       <DateDisplay timezone={timezone} backgroundColor={backgroundColor} />
@@ -49,8 +45,6 @@ function TimeAndLocation({ location_data, backgroundColor }) {
 }
 
 export default TimeAndLocation;
-
-
 
 
 
