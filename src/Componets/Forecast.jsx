@@ -1,6 +1,7 @@
 //forcast component 
 import React from 'react';
-import { convertTemperature, formatHour, getContrastColor, getAdjustedDateTime } from '../utils';
+import { convertTemperature, getContrastColor } from '../utils';
+import { formatHour, getAdjustedDateTime } from '../utils/timeUtils';
 
 const ForecastItem = ({ item, isHourly, temperatureUnit, backgroundColor, contrastColor, index }) => {
   const { datetimeEpoch, temp, tempmax, tempmin, icon } = item;

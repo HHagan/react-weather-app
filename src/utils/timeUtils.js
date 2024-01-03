@@ -10,6 +10,3 @@ export function formatHour(hour) {
   }
 
 
-import { getContrastColor, getBackgroundColor } from './colorUtils';
-import { convertTemperature } from './temperatureUtils';
-import { formatHour, getAdjustedDateTime } from './timeUtils';

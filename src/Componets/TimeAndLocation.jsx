@@ -6,17 +6,15 @@ function DateDisplay({ timezone, backgroundColor }) {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   useEffect(() => {
-    // Update current date and time every second
     const intervalId = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array ensures the effect runs only once
+  }, []); 
 
   const formattedDate = currentDateTime.toLocaleString('en-US', {
-    timeZone: timezone,  // Use the provided timezone
+    timeZone: timezone,
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -35,11 +33,25 @@ function DateDisplay({ timezone, backgroundColor }) {
 }
 
 // TimeAndLocation function
-function TimeAndLocation({ location_data: { address, timezone }, backgroundColor }) {
+function TimeAndLocation({ location_data, backgroundColor }) {
+  const defaultLocation = 'London'; // Set default location to London
+  const [currentLocation, setCurrentLocation] = useState(defaultLocation);
+
+  useEffect(() => {
+    // If location_data is available, update the current location
+    if (location_data && location_data.address) {
+      setCurrentLocation(location_data.address);
+    }
+  }, [location_data]);
+
+  if (!location_data || !location_data.address) {
+    return null; // Handle the case where location_data or address is null or undefined
+  }
+
   return (
     <div className='flex flex-col items-center justify-center'>
-      <DateDisplay timezone={timezone} backgroundColor={backgroundColor} />
-      <p className='text-1xl font-light' style={{ color: getContrastColor(backgroundColor) }}>{address}</p>
+      <DateDisplay timezone={location_data.timezone} backgroundColor={backgroundColor} />
+      <p className='text-1xl font-light' style={{ color: getContrastColor(backgroundColor) }}>{currentLocation}</p>
     </div>
   );
 }

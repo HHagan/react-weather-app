@@ -6,4 +6,3 @@ export function convertToFahrenheit(celsius) {
   export function convertToCelsius(fahrenheit) {
     return (fahrenheit - 32) * 5/9;
   }
-

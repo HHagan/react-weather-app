@@ -1,3 +1,4 @@
+
 // App.js
 import React, { useState, useEffect } from 'react';
 import TopButtons from './Componets/TopButtons';
@@ -7,71 +8,102 @@ import TempAndDets from './Componets/TempAndDets';
 import Forecast from './Componets/Forecast';
 import { getWeatherData } from './services/weatherService';
 import { getContrastColor, getBackgroundColor } from './utils/colorUtils';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const initialInclude = ['hours', 'days', 'alerts', 'current', 'events'];
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState(null);
   const [temperatureUnit, setTemperatureUnit] = useState('metric');
   const [contrastColor, setContrastColor] = useState(null);
-  const [include] = useState(['hours', 'days', 'alerts', 'current', 'events']);
   const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState('Tulsa, OK');
+  const [temperature, setTemperature] = useState('Tulsa, OK');
 
-  const handleTemperatureUnitChange = (unit) => {
-    setTemperatureUnit(unit);
-  };
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getWeatherData('Tulsa, OK', temperatureUnit, include);
-        setWeatherData(response);
-      } catch (error) {
-        setError(`Error fetching weather data: ${error.message}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  console.log('doing initial stuff')
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       let tempUnit = 'metric'; // Declare tempUnit here
+  //       if (temperatureUnit === 'imperial') {
+  //         tempUnit = 'us'; // Assign tempUnit here
+  //       }
+  //       const response = await getWeatherData(location, tempUnit, initialInclude); // tempUnit was temperatureUnit
+  //       setWeatherData(response);
+  //     } catch (error) {
+  //       setError(`Error fetching weather data: ${error.message}`);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await getWeatherData(location, temperatureUnit, initialInclude); // tempUnit was temperatureUnit
+          setWeatherData(response);
+        } catch (error) {
+          setError(`Error fetching weather data: ${error.message}`);
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
     fetchData();
-  }, [temperatureUnit]);
+  }, [location, temperatureUnit]);
 
   useEffect(() => {
     if (weatherData) {
       const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
       const newContrastColor = getContrastColor(backgroundColor);
-      setContrastColor((prevContrastColor) => {
-        // Use a callback to access the latest state
-        if (newContrastColor !== prevContrastColor) {
-          return newContrastColor;
-        }
-        return prevContrastColor;
+      if (newContrastColor !== contrastColor) {
+        setContrastColor(newContrastColor);
+      }
+    }
+  }, [weatherData, contrastColor]);
+
+  useEffect(() => {
+    if (isLoading) {
+      console.log('Loading...')
+      toast.info("Location Loading...", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
     }
-  }, [weatherData]);
+  }, [isLoading]);
 
   if (error) {
     return <p>Error: {error}</p>;
   }
 
   if (isLoading || !weatherData || !contrastColor ) {
-    return <p>Loading...</p>;
+    return null;
   }
 
-   
   const backgroundColor = getBackgroundColor(weatherData.days[0].temp);
 
   return (
     <div className='mx-auto max-w-screen-md mt-4 py-5 px-32 h-fit shadow-xl shadow-gray-400' style={{ backgroundColor: backgroundColor }}>
-      <TopButtons backgroundColor={backgroundColor} contrastColor={contrastColor} />
-
-      <Inputs temperatureUnit={temperatureUnit} onTemperatureUnitChange={handleTemperatureUnitChange} contrastColor={contrastColor} />
-
+      <ToastContainer />
+      <TopButtons backgroundColor={backgroundColor} contrastColor={contrastColor} onLocationChange={setLocation} />
+      <Inputs 
+          temperatureUnit={temperatureUnit} 
+          onTemperatureUnitChange={setTemperatureUnit} 
+          contrastColor={contrastColor} 
+          temperature={temperature}
+          setTemperature={setTemperature} />
       <>
         <TimeAndLocation location_data={weatherData} backgroundColor={backgroundColor} />
-
         <TempAndDets days_data={weatherData.days[0]} temperatureUnit={temperatureUnit} contrastColor={contrastColor} />
-
         <Forecast
           title='Hourly Forecast'
           data={weatherData.days[0].hours}
@@ -80,7 +112,6 @@ function App() {
           backgroundColor={backgroundColor}
           contrastColor={contrastColor}
         />
-
         <Forecast
           title='Daily Forecast'
           data={weatherData.days.slice(1, 6)}
@@ -88,16 +119,13 @@ function App() {
           temperatureUnit={temperatureUnit}
           backgroundColor={backgroundColor}
           contrastColor={contrastColor}
-        />
+         />
       </>
     </div>
   );
 }
 
 export default App;
-
-
-
 
 
 
