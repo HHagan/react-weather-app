@@ -1,10 +1,10 @@
-// Inputs.jsx
 import React, { useState } from 'react';
 import { CiLocationOn } from 'react-icons/ci';
 import { WiFahrenheit, WiCelsius } from 'react-icons/wi';
 import { getWeatherData } from '../services/weatherService';
+import { convertToFahrenheit, convertToCelsius } from '../utils/tempUtils';
 
-function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
+function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor, temperature, setTemperature }) {
   const [searchInput, setSearchInput] = useState('');
 
   const handleGeolocation = async ({ coords: { latitude, longitude } }) => {
@@ -33,9 +33,15 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
   };
 
   const handleTemperatureToggle = (newUnit) => {
-    console.log('Temperature unit changed to:', newUnit);
-    onTemperatureUnitChange(newUnit);
-  };
+  console.log('Temperature unit changed to:', newUnit);
+  onTemperatureUnitChange(newUnit);
+
+  if (newUnit === 'metric') { // If new unit is metric, convert to celsius
+    setTemperature(convertToCelsius(temperatureUnit === 'imperial' ? convertToFahrenheit(temperature) : temperature));
+  } else { 
+    setTemperature(convertToFahrenheit(temperatureUnit === 'metric' ? convertToCelsius(temperature) : temperature));
+  }
+};
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
