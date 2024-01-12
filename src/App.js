@@ -1,4 +1,3 @@
-
 // App.js
 import React, { useState, useEffect } from 'react';
 import TopButtons from './Componets/TopButtons';
@@ -10,6 +9,7 @@ import { getWeatherData } from './services/weatherService';
 import { getContrastColor, getBackgroundColor } from './utils/colorUtils';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
 const initialInclude = ['hours', 'days', 'alerts', 'current', 'events'];
 
@@ -20,38 +20,22 @@ function App() {
   const [contrastColor, setContrastColor] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState('Tulsa, OK');
-  const [temperature, setTemperature] = useState('Tulsa, OK');
+  const [temperature, setTemperature] = useState(0);
 
-  console.log('doing initial stuff')
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       let tempUnit = 'metric'; // Declare tempUnit here
-  //       if (temperatureUnit === 'imperial') {
-  //         tempUnit = 'us'; // Assign tempUnit here
-  //       }
-  //       const response = await getWeatherData(location, tempUnit, initialInclude); // tempUnit was temperatureUnit
-  //       setWeatherData(response);
-  //     } catch (error) {
-  //       setError(`Error fetching weather data: ${error.message}`);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await getWeatherData(location, temperatureUnit, initialInclude); // tempUnit was temperatureUnit
-          setWeatherData(response);
-        } catch (error) {
-          setError(`Error fetching weather data: ${error.message}`);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+      
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const tempUnit = temperatureUnit === 'imperial' ? 'us' : 'metric';
+        const response = await getWeatherData(location, tempUnit, initialInclude);
+        setWeatherData(response);
+      } catch (error) {
+        setError(`Error fetching weather data: ${error.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
     fetchData();
   }, [location, temperatureUnit]);
@@ -68,7 +52,6 @@ function App() {
 
   useEffect(() => {
     if (isLoading) {
-      console.log('Loading...')
       toast.info("Location Loading...", {
         position: "top-right",
         autoClose: 5000,
@@ -96,15 +79,15 @@ function App() {
       <ToastContainer />
       <TopButtons backgroundColor={backgroundColor} contrastColor={contrastColor} onLocationChange={setLocation} />
       <Inputs 
+          setLocation={setLocation}
           temperatureUnit={temperatureUnit} 
           onTemperatureUnitChange={setTemperatureUnit} 
           contrastColor={contrastColor} 
           temperature={temperature}
           setTemperature={setTemperature} />
-      <>
-        <TimeAndLocation location_data={weatherData} backgroundColor={backgroundColor} />
-        <TempAndDets days_data={weatherData.days[0]} temperatureUnit={temperatureUnit} contrastColor={contrastColor} />
-        <Forecast
+      <TimeAndLocation location_data={weatherData} backgroundColor={backgroundColor} />
+      <TempAndDets days_data={weatherData.days[0]} temperatureUnit={temperatureUnit} contrastColor={contrastColor} />
+      <Forecast
           title='Hourly Forecast'
           data={weatherData.days[0].hours}
           isHourly={true}
@@ -112,7 +95,7 @@ function App() {
           backgroundColor={backgroundColor}
           contrastColor={contrastColor}
         />
-        <Forecast
+      <Forecast
           title='Daily Forecast'
           data={weatherData.days.slice(1, 6)}
           isHourly={false}
@@ -120,12 +103,8 @@ function App() {
           backgroundColor={backgroundColor}
           contrastColor={contrastColor}
          />
-      </>
     </div>
   );
 }
 
 export default App;
-
-
-

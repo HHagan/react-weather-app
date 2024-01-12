@@ -1,16 +1,16 @@
-//forcast component 
+// Forecast component 
 import React from 'react';
-import { convertTemperature, getContrastColor } from '../utils';
 import { formatHour, getAdjustedDateTime } from '../utils/timeUtils';
+import { getContrastColor } from '../utils/colorUtils';
 
-const ForecastItem = ({ item, isHourly, temperatureUnit, backgroundColor, contrastColor, index }) => {
+const ForecastItem = ({ item, isHourly, backgroundColor, contrastColor, index }) => {
   const { datetimeEpoch, temp, tempmax, tempmin, icon } = item;
   const adjustedDateTime = getAdjustedDateTime(datetimeEpoch, 0);
   const forecastHour = adjustedDateTime.getHours();
   const formattedHour = formatHour(forecastHour);
-  const temperature = convertTemperature(temp, temperatureUnit);
-  const temp_max = convertTemperature(tempmax, temperatureUnit);
-  const temp_min = convertTemperature(tempmin, temperatureUnit);
+  const temperature = Math.round(temp);
+  const temp_max = Math.round(tempmax);
+  const temp_min = Math.round(tempmin);
 
   return (
     <div className='forecast-item flex flex-col items-center justify-center' style={{ backgroundColor, color: contrastColor }}>

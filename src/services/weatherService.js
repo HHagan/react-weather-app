@@ -18,6 +18,7 @@ export const getWeatherData = async (location, unit, include, contentType = 'jso
   }
 };
 
+
 export default getWeatherData; // Optional if you want to use default export
 
 

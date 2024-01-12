@@ -27,31 +27,31 @@ function DateDisplay({ timezone, backgroundColor }) {
 
   return (
     <div className='flex items-center justify-center my-6'>
-      <p className='text-1xl font-light' style={{ color: contrastColor }}>{formattedDate}</p>
+      <p className='text-1xl font-bold' style={{ color: contrastColor }}>{formattedDate}</p>
     </div>
   );
 }
 
 // TimeAndLocation function
 function TimeAndLocation({ location_data, backgroundColor }) {
-  const defaultLocation = 'London'; // Set default location to London
+  const defaultLocation = 'Tulsa, OK';
   const [currentLocation, setCurrentLocation] = useState(defaultLocation);
 
   useEffect(() => {
     // If location_data is available, update the current location
-    if (location_data && location_data.address) {
-      setCurrentLocation(location_data.address);
+    if (location_data?.resolvedAddress) {
+      setCurrentLocation(location_data.resolvedAddress);
     }
   }, [location_data]);
 
-  if (!location_data || !location_data.address) {
-    return null; // Handle the case where location_data or address is null or undefined
+  if (!location_data?.resolvedAddress) {
+    return null; // Handle the case where location_data or resolvedAddress is null or undefined
   }
 
   return (
     <div className='flex flex-col items-center justify-center'>
       <DateDisplay timezone={location_data.timezone} backgroundColor={backgroundColor} />
-      <p className='text-1xl font-light' style={{ color: getContrastColor(backgroundColor) }}>{currentLocation}</p>
+      <p className='text-1xl font-bold' style={{ color: getContrastColor(backgroundColor) }}>{currentLocation}</p>
     </div>
   );
 }
