@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { getContrastColor } from '../utils';
 
-// DateDisplay function for displaying the date
+/**
+ * DateDisplay is a functional component that displays the current date and time.
+ * It updates every second.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.timezone - The timezone to use for displaying the date and time.
+ * @param {string} props.backgroundColor - The background color to use for calculating the contrast color.
+ * @returns {JSX.Element} The rendered component.
+ */
 function DateDisplay({ timezone, backgroundColor }) {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   useEffect(() => {
-    // Update current date and time every second
     const intervalId = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array ensures the effect runs only once
+  }, []); 
 
   const formattedDate = currentDateTime.toLocaleString('en-US', {
-    timeZone: timezone,  // Use the provided timezone
+    timeZone: timezone,
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -29,25 +35,43 @@ function DateDisplay({ timezone, backgroundColor }) {
 
   return (
     <div className='flex items-center justify-center my-6'>
-      <p className='text-1xl font-light' style={{ color: contrastColor }}>{formattedDate}</p>
+      <p className='text-1xl font-bold' style={{ color: contrastColor }}>{formattedDate}</p>
     </div>
   );
 }
 
-// TimeAndLocation function
-function TimeAndLocation({ location_data: { address, timezone }, backgroundColor }) {
+/**
+ * TimeAndLocation is a functional component that displays the current date, time, and location.
+ * It updates the location whenever the location_data prop changes.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.location_data - The data about the current location.
+ * @param {string} props.location_data.resolvedAddress - The resolved address of the current location.
+ * @param {string} props.location_data.timezone - The timezone of the current location.
+ * @param {string} props.backgroundColor - The background color to use for calculating the contrast color.
+ * @returns {JSX.Element|null} The rendered component, or null if location_data or resolvedAddress is null or undefined.
+ */
+function TimeAndLocation({ location_data, backgroundColor }) {
+  const defaultLocation = 'Tulsa, OK';
+  const [currentLocation, setCurrentLocation] = useState(defaultLocation);
+
+  useEffect(() => {
+    // If location_data is available, update the current location
+    if (location_data?.resolvedAddress) {
+      setCurrentLocation(location_data.resolvedAddress);
+    }
+  }, [location_data]);
+
+  if (!location_data?.resolvedAddress) {
+    return null; // Handle the case where location_data or resolvedAddress is null or undefined
+  }
+
   return (
     <div className='flex flex-col items-center justify-center'>
-      <DateDisplay timezone={timezone} backgroundColor={backgroundColor} />
-      <p className='text-1xl font-light' style={{ color: getContrastColor(backgroundColor) }}>{address}</p>
+      <DateDisplay timezone={location_data.timezone} backgroundColor={backgroundColor} />
+      <p className='text-1xl font-bold' style={{ color: getContrastColor(backgroundColor) }}>{currentLocation}</p>
     </div>
   );
 }
 
 export default TimeAndLocation;
-
-
-
-
-
-

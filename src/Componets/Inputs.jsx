@@ -1,40 +1,58 @@
-// Inputs.jsx
 import React, { useState } from 'react';
 import { CiLocationOn } from 'react-icons/ci';
 import { WiFahrenheit, WiCelsius } from 'react-icons/wi';
-import { getWeatherData } from '../services/weatherService';
+import { convertToFahrenheit, convertToCelsius } from '../utils/tempUtils';
+import handleGeolocation  from '../services/geoLocation';
 
-function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
+/**
+ * Inputs is a functional component that provides inputs for setting the location and temperature unit.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Function} props.setLocation - The function to call when the location changes.
+ * @param {string} props.temperatureUnit - The current temperature unit ('metric' or 'imperial').
+ * @param {Function} props.onTemperatureUnitChange - The function to call when the temperature unit changes.
+ * @param {string} props.contrastColor - The contrast color to use for the inputs.
+ * @param {number} props.temperature - The current temperature.
+ * @param {Function} props.setTemperature - The function to call when the temperature changes.
+ * @returns {JSX.Element} The rendered component.
+ */
+function Inputs({ setLocation, temperatureUnit, onTemperatureUnitChange, contrastColor, temperature, setTemperature }) {
   const [searchInput, setSearchInput] = useState('');
 
-  const handleGeolocation = async ({ coords: { latitude, longitude } }) => {
-    console.log('current location weather thingy is disabled man');
+
+  const handleButtonClick = (city) => {
+    console.log('Location changed to:', city);
+    setLocation(city);
   };
 
-  const getCurrentLocationWeather = async () => {
+
+  const getCurrentLocation = async () => {
     try {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(handleGeolocation);
-      } else {
-        alert('Geolocation is not supported by this browser.');
-      }
+      const city = await handleGeolocation();
+      setLocation(city);
     } catch (error) {
-      console.error('Error fetching weather data for current location:', error);
+      console.error('Error getting current location:', error);
     }
   };
 
-  const handleSearch = async () => {
-    try {
-      const weatherData = await getWeatherData(searchInput, temperatureUnit);
-      console.log('Search result weather data:', weatherData);
-    } catch (error) {
-      console.error('Error fetching weather data for the search input:', error);
-    }
-  };
-
+/**
+   * handleTemperatureToggle is a function that updates the temperature unit and the temperature.
+   *
+   * @param {string} newUnit - The new temperature unit ('metric' or 'imperial').
+   */
   const handleTemperatureToggle = (newUnit) => {
     console.log('Temperature unit changed to:', newUnit);
     onTemperatureUnitChange(newUnit);
+
+    if (newUnit === 'metric') {
+      setTemperature(
+        convertToCelsius(temperatureUnit === 'imperial' ? convertToFahrenheit(temperature) : temperature)
+      );
+    } else {
+      setTemperature(
+        convertToFahrenheit(temperatureUnit === 'metric' ? convertToCelsius(temperature) : temperature)
+      );
+    }
   };
 
   const handleKeyPress = (event) => {
@@ -43,13 +61,23 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
     }
   };
 
+  const handleSearch = () => {
+    console.log('Search initiated for:', searchInput);
+    // Perform the search action here, e.g., setLocation(searchInput);
+    handleButtonClick(searchInput);
+  };
+
+  const handleInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
   return (
-    <div className='flex flex-row justify-center my-6'>
+    <div id='SearchBox' className='flex flex-row justify-center my-6'>
       <div className="flex items-center max-w-md w-full bg-gray-700 rounded-full p-2 hover:bg-gray-600 focus:outline-none">
         <button
           className='flex items-center justify-center w-12 h-12 text-white rounded-full focus:outline-none'
-          onClick={getCurrentLocationWeather}
-        >
+          onClick={getCurrentLocation}>
+          
           <CiLocationOn size={24} />
         </button>
         <input
@@ -57,12 +85,12 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
           placeholder="Search for city"
           className='flex-grow ml-2 bg-transparent focus:outline-none text-white'
           value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={handleInputChange}
           onKeyPress={handleKeyPress}
         />
         <button
           className='w-20 h-12 ml-2 text-white bg-gray-700 rounded-full hover:bg-gray-600 focus:outline-none'
-          onClick={handleSearch}
+          onClick={() => handleButtonClick(searchInput)}
         >
           Search
         </button>
@@ -72,7 +100,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
           name="metric"
           className={`text-xl text-white font-light ${temperatureUnit === 'metric' ? 'text-blue-500' : ''}`}
           onClick={() => handleTemperatureToggle('metric')}
-          style={{ color: contrastColor }} // Set font color here
+          style={{ color: contrastColor }}
         >
           <WiCelsius size={30} />
         </button>
@@ -81,7 +109,7 @@ function Inputs({ temperatureUnit, onTemperatureUnitChange, contrastColor }) {
           name="imperial"
           className={`text-xl text-white font-light ${temperatureUnit === 'imperial' ? 'text-blue-500' : ''}`}
           onClick={() => handleTemperatureToggle('imperial')}
-          style={{ color: contrastColor }} // Set font color here
+          style={{ color: contrastColor }}
         >
           <WiFahrenheit size={30} />
         </button>
