@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getContrastColor } from '../utils';
 
-// DateDisplay function for displaying the date
+/**
+ * DateDisplay is a functional component that displays the current date and time.
+ * It updates every second.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.timezone - The timezone to use for displaying the date and time.
+ * @param {string} props.backgroundColor - The background color to use for calculating the contrast color.
+ * @returns {JSX.Element} The rendered component.
+ */
 function DateDisplay({ timezone, backgroundColor }) {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
@@ -32,7 +40,17 @@ function DateDisplay({ timezone, backgroundColor }) {
   );
 }
 
-// TimeAndLocation function
+/**
+ * TimeAndLocation is a functional component that displays the current date, time, and location.
+ * It updates the location whenever the location_data prop changes.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.location_data - The data about the current location.
+ * @param {string} props.location_data.resolvedAddress - The resolved address of the current location.
+ * @param {string} props.location_data.timezone - The timezone of the current location.
+ * @param {string} props.backgroundColor - The background color to use for calculating the contrast color.
+ * @returns {JSX.Element|null} The rendered component, or null if location_data or resolvedAddress is null or undefined.
+ */
 function TimeAndLocation({ location_data, backgroundColor }) {
   const defaultLocation = 'Tulsa, OK';
   const [currentLocation, setCurrentLocation] = useState(defaultLocation);
@@ -57,9 +75,3 @@ function TimeAndLocation({ location_data, backgroundColor }) {
 }
 
 export default TimeAndLocation;
-
-
-
-
-
-

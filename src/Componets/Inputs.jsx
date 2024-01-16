@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { CiLocationOn } from 'react-icons/ci';
 import { WiFahrenheit, WiCelsius } from 'react-icons/wi';
-import { getWeatherData } from '../services/weatherService';
 import { convertToFahrenheit, convertToCelsius } from '../utils/tempUtils';
 import handleGeolocation  from '../services/geoLocation';
 
+/**
+ * Inputs is a functional component that provides inputs for setting the location and temperature unit.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Function} props.setLocation - The function to call when the location changes.
+ * @param {string} props.temperatureUnit - The current temperature unit ('metric' or 'imperial').
+ * @param {Function} props.onTemperatureUnitChange - The function to call when the temperature unit changes.
+ * @param {string} props.contrastColor - The contrast color to use for the inputs.
+ * @param {number} props.temperature - The current temperature.
+ * @param {Function} props.setTemperature - The function to call when the temperature changes.
+ * @returns {JSX.Element} The rendered component.
+ */
 function Inputs({ setLocation, temperatureUnit, onTemperatureUnitChange, contrastColor, temperature, setTemperature }) {
   const [searchInput, setSearchInput] = useState('');
+
 
   const handleButtonClick = (city) => {
     console.log('Location changed to:', city);
@@ -23,7 +35,11 @@ function Inputs({ setLocation, temperatureUnit, onTemperatureUnitChange, contras
     }
   };
 
-
+/**
+   * handleTemperatureToggle is a function that updates the temperature unit and the temperature.
+   *
+   * @param {string} newUnit - The new temperature unit ('metric' or 'imperial').
+   */
   const handleTemperatureToggle = (newUnit) => {
     console.log('Temperature unit changed to:', newUnit);
     onTemperatureUnitChange(newUnit);
@@ -60,7 +76,6 @@ function Inputs({ setLocation, temperatureUnit, onTemperatureUnitChange, contras
       <div className="flex items-center max-w-md w-full bg-gray-700 rounded-full p-2 hover:bg-gray-600 focus:outline-none">
         <button
           className='flex items-center justify-center w-12 h-12 text-white rounded-full focus:outline-none'
-         // onClick={() => handleGeolocation(setLocation)} // Pass setLocation as an argument
           onClick={getCurrentLocation}>
           
           <CiLocationOn size={24} />
